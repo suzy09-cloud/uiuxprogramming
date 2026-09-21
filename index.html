@@ -9,46 +9,69 @@
   사용자: OTT 이용자
   목적: 사용하는 OTT에서 감상할 콘텐츠를 정해준다. 
   핵심 행동: 내가 찜한 리스트에 있는 콘텐츠를 기록하고 그 중에서 감상할 콘텐츠를 추천해준다.
-  정보 순서: 서비스 소개 → 주요 기능 → 이용 방법 → 소식 받기
+  정보 순서: 서비스 소개 → 주요 기능 → 이용 방법 → 사이트 소식 받기
   -->
 
   <header>
     <h1>오늘 볼 걸 정해줘!</h1>
     <p>사용하시는 OTT에서 찜 해두고 스크롤만 하다가 결국 못 정하시는 경험을 해보신 분이라면? 저희가 오늘 볼 것을 정해드릴게요!</p>
+    <nav aria-label="주요 메뉴">
+      <a href="#about">서비스 소개</a>
+      <a href="#features">주요 기능</a>
+      <a href="#steps">이용 방법</a>
+      <a href="#subscribe">사이트 소식 받기</a>
+    </nav>
   </header>
 
-  <h2>서비스 소개</h2>
-  <h3>보고싶은 건 많지만 막상 고르지는 못하는 당신을 위해~</h3>
+  <main>
+    <section id="about">
+      <h2>서비스 소개</h2>
+      <h3>보고싶은 건 많지만 막상 고르지는 못하는 당신을 위해~</h3>
 
-  <img src="assets/images/watching_movie.jpg" alt="영화를 관람하는 사용자">
+      <img src="assets/images/watching_movie.jpg" alt="영화를 관람하는 사용자">
+      <p>오늘의 콘텐츠를 골라주는 서비스</p>
+    </section>
 
-  <h2>주요 기능</h2>
-  <ul>
-    <li>
-      <h3>찜한 목록 추가</h3>
-      <p>찜한 목록에 있는 콘텐츠들을 추가할 수 있어요.</p>
-    </li>
-    <li>
-      <h3>카테고리 선택</h3>
-      <p>보고싶었던 콘텐츠를 더 정확하게 선정할 수 있도록 카테고리를 선택하실 수 있어요.</p>
-    </li>
-    <li>
-      <h3>콘텐츠 선정</h3>
-      <p>고르신 카테고리를 기반으로 찜 목록에서 오늘 감상할 콘텐츠를 선정해드려요.</p>
-    </li>
-  </ul>
+    <section id="features">
+      <h2>주요 기능</h2>
+      <ul>
+        <li>
+          <h3>찜한 목록 추가</h3>
+          <p>찜한 목록에 있는 콘텐츠들을 추가할 수 있어요.</p>
+        </li>
+        <li>
+         <h3>카테고리 선택</h3>
+          <p>보고싶었던 콘텐츠를 더 정확하게 선정할 수 있도록 카테고리를 선택하실 수 있어요.</p>
+        </li>
+        <li>
+          <h3>콘텐츠 선정</h3>
+          <p>고르신 카테고리를 기반으로 찜 목록에서 오늘 감상할 콘텐츠를 선정해드려요.</p>
+        </li>
+      </ul>
+    </section>
 
-  <h2>이용 방법</h2>
-  <ol>
-    <li>OTT에 있는 찜한 목록에 있는 콘텐츠를 추가해주세요!</li>
-    <li>화면에 나타나는 선택지를 골라주세요!</li>
-    <li>콘텐츠 선정 완료!</li>
-  </ol>
-  <h2>사이트의 새로운 소식 받기</h2>
-  <form>
-    <label for="email">이메일</label>
-    <input type="email" name="email" id="email">
-    <button type="submit">새로운 소식 받아보기</button>
-  </form>
+    <section id="steps">
+      <h2>이용 방법</h2>
+      <ol>
+        <li>OTT에 있는 찜한 목록에 있는 콘텐츠를 추가해주세요!</li>
+        <li>화면에 나타나는 선택지를 골라주세요!</li>
+        <li>콘텐츠 선정 완료!</li>
+      </ol>
+    </section>
+
+    <section id="subscribe">
+      <h2>사이트 소식 받기</h2>
+      <form>
+        <label for="email">이메일</label>
+        <input type="email" name="email" id="email">
+        <button type="submit">새로운 소식 받아보기</button>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <small>ⓒ 2026 콘텐츠 선정 서비스</small>
+  </footer>
+
   </body>
 </html>
