@@ -1,15 +1,79 @@
 body {
+    color: #2a2929;
     font-family: "Noto Sans Korean", sans-serif;
+    font-size: 18px;
+    line-height: 1.6;
+}
+nav a{
+    color: #484848;
+    font-weight: 700;
+}
+h1 {
+    font-size: 48px;
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+}
+h2 {
+    color: #f45ba2;
+    font-size: 32px;
+    font-weight: 800;
+    line-height: 1.3;
+}
+h3 {
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.4;
+}
+p {
+    color: #555763;
+    line-height: 1.7;
 }
 .features-list {
+    display: flex;
+    align-items: stretch;
+    gap: 24px;
     list-style-type: none;
     padding-left: 0;
     margin: 0;
 }
 .feature-card {
+    flex: 1;
     padding: 20px 24px;
-    margin-bottom: 16px;
-    border: 1px solid #deddea;
+    margin-bottom: 0px;
+    border: 1px solid #dfccd5;
     border-radius: 12px;
-    background-color: #f4f3ff;
+    background-color: #fef7fa;
+}
+*,
+*::before
+*::after {
+    box-sizing: border-box;
+}
+.subscribe-card {
+    padding: 24px;
+    margin-top: 32px;
+    border: 1px solid #dfccd5;
+    background-color: #fef7fa;
+    border-radius: 12px;
+}
+button {
+    padding: 12px 18px;
+    border: 0;
+    border-radius: 10px;
+    color: #fefefe;
+    background-color: #ef4681;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+}
+button:hover {
+    background-color: #e22f59;
+}
+button:focus,
+input:focus {
+    outline: 3px solid #765665;
+    outline-offset: 2px;
+}
+button:active {
+    transform: translateY(1px);
 }
