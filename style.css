@@ -19,7 +19,7 @@ img {
     max-width: 720px;
     height: auto;
     margin: 20px auto;
-    border-radius: 16px;
+    border-radius: 10px;
 }
 header {
     padding-top: 48px;
@@ -49,7 +49,7 @@ h1 {
     letter-spacing: -0.02em;
 }
 h2 {
-    color: #f45ba2;
+    color: #f45b7f;
     font-size: 32px;
     font-weight: 800;
     line-height: 1.3;
@@ -75,9 +75,9 @@ p {
     flex: 1;
     padding: 20px 24px;
     margin-bottom: 0px;
-    border: 1px solid #dfccd5;
+    border: 1px solid #dfcccd;
     border-radius: 12px;
-    background-color: #fef7fa;
+    background-color: #fef7f8;
 }
 *,
 *::before
@@ -87,8 +87,8 @@ p {
 .subscribe-card {
     padding: 24px;
     margin-top: 32px;
-    border: 1px solid #dfccd5;
-    background-color: #fef7fa;
+    border: 1px solid #dfcccd;
+    background-color: #fef7f8;
     border-radius: 12px;
 }
 form {
@@ -112,16 +112,16 @@ button {
     border: 0;
     border-radius: 10px;
     color: #fefefe;
-    background-color: #ef4681;
+    background-color: #ef465d;
     cursor: pointer;
     transition: background-color 0.2s, transform 0.2s;
 }
 button:hover {
-    background-color: #e22f59;
+    background-color: #c02b4e;
 }
 button:focus,
 input:focus {
-    outline: 3px solid #765665;
+    outline: 3px solid #76565f;
     outline-offset: 2px;
 }
 button:active {
