@@ -3,10 +3,44 @@ body {
     font-family: "Noto Sans Korean", sans-serif;
     font-size: 18px;
     line-height: 1.6;
+    margin: 0;
+    background-color: #fcf2f2;
+}
+header,
+main,
+footer {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+img {
+    display: block;
+    width: 100%;
+    max-width: 720px;
+    height: auto;
+    margin: 20px auto;
+    border-radius: 16px;
+}
+header {
+    padding-top: 48px;
+    padding-bottom: 32px;
+}
+section {
+    margin-top: 56px;
+}
+footer {
+    padding-top: 32px;
+    padding-bottom: 32px;
+}
+nav {
+    display: flex;
+    gap: 24px;
+    margin-top: 24px;
 }
 nav a{
     color: #484848;
     font-weight: 700;
+    text-decoration: none;
 }
 h1 {
     font-size: 48px;
@@ -56,6 +90,22 @@ p {
     border: 1px solid #dfccd5;
     background-color: #fef7fa;
     border-radius: 12px;
+}
+form {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+input {
+    flex: 1;
+    min-width: 0;
+    padding: 12px;
+    border: 1px solid #cab0b0;
+    border-radius: 10px;
+}
+input,
+button {
+    font: inherit;
 }
 button {
     padding: 12px 18px;
