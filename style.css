@@ -1,3 +1,6 @@
+body {
+    font-family: "Noto Sans Korean", sans-serif;
+}
 .features-list {
     list-style-type: none;
     padding-left: 0;
