@@ -9,9 +9,30 @@ function makeSubscribeMessage(email, subscribed) {
     return "이메일을 입력한 뒤 신청해주세요.";
 }
 
-console.log(typeof serviceName);
-console.log(typeof isSubscribed);
-console.log(typeof submitCount);
+const subscribeForm = document.querySelector("#subscribeForm");
+const emailInput = document.querySelector("#email");
+const subscribeButton = document.querySelector("#subscribeButton");
+const subscribeMessage = document.querySelector("#subscribeMessage");
 
-console.log(makeSubscribeMessage("", false));
-console.log(makeSubscribeMessage("learner@example.com", true));
+function handleSubscribe(event) {
+    event.preventDefault();
+
+    const subscriberEmail = emailInput.value.trim();
+
+    if (subscriberEmail === ""){
+        subscribeMessage.textContent = "이메일을 입력한 뒤 신청해주세요.";
+        emailInput.focus();
+        return;
+    }
+    isSubscribed = true;
+    submitCount += 1;
+
+    subscribeMessage.textContent = makeSubscribeMessage(subscriberEmail,isSubscribed);
+
+    subscribeMessage.classList.add("is-success");
+
+    subscribeButton.textContent = "신청 완료";
+    subscribeButton.disabled = true;
+}
+
+subscribeForm.addEventListener("submit", handleSubscribe);

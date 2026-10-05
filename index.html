@@ -67,11 +67,14 @@
 
     <section id="subscribe" class="subscribe-card">
       <h2>사이트 소식 받기</h2>
-      <form>
+      <form id="subscribeForm">
         <label for="email">이메일</label>
         <input type="email" name="email" id="email" placeholder="name@example.com">
-        <button type="submit">사이트 소식 받아보기</button>
+        <button type="submit" id="subscribeButton">사이트 소식 받아보기</button>
       </form>
+      <p id="subscribeMessage" aria-live="polite">
+        이메일을 입력한 뒤 신청해주세요.
+      </p>
     </section>
   </main>
 

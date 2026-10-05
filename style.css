@@ -171,3 +171,19 @@ button:active {
         min-height: 48px;
     }
 }
+#subscribeMessage{
+    margin-top: 16px;
+    color: #616060;
+}
+#subscribeMessage.is-success{
+    color: #174b29;
+    background-color: #ddeede;
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: 700;
+}
+#subscribeButton:disabled{
+    color: #fefefe;
+    background-color: #979797;
+    cursor: not-allowed;
+}
