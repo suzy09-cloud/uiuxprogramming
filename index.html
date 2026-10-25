@@ -25,6 +25,7 @@
       <a href="#about">서비스 소개</a>
       <a href="#features">주요 기능</a>
       <a href="#steps">이용 방법</a>
+      <a href="#event-practice">사용 준비 단계</a>
       <a href="#subscribe">사이트 소식 받기</a>
     </nav>
   </header>
@@ -139,32 +140,104 @@
         <button id="info-confirm" type="button">동의하고 작성 시작하기</button>
       </div>
     </dialog>
-    <section id="addlist-flow" class="addlist-flow" hidden>
-      <h2>찜 목록 작성</h2>
+    <section id="want-list" class="want-list" hidden>
+      <h2>찜 목록 관리</h2>
+      <div class="list-setting">
+        <section class="want-list-name">
+          <div class="name-info">
+            <h3>찜 목록의 이름을 설정해주세요.</h3>
+            <label for="list-name">찜 목록 이름</label>
+          </div>
+          <input id="list-name" type="text" placeholder="예: 넷플릭스" aria-describedby="name-error">
+          <p id="name-error" class="error-message" aria-live="polite"></p>
+          <button id="make-list" type="button">목록 만들기</button>
+          <div class="edit-list" hidden>
+            <button id="edit-listname" type="button">이름 수정하기</button>
+            <button id="show-list" type="button">목록 작성</button>
+          </div>
+          <div class="edit-name" hidden>
+            <button id="edit-name-confirm" type="button">수정</button>
+            <button id="edit-name-cancel" type="button">취소</button>
+          </div>
+        </section>
+        
+        <section class="want-list-add" hidden>
+          <div class="title-info">
+            <h4>콘텐츠 제목을 입력해주세요.</h4>
+            <label for="content-title">콘텐츠 제목</label>
+          </div>
+          <input id="content-title" type="text" placeholder="예: 죠죠의 기묘한 모험" aria-describedby="title-error">
+          <p id="title-error" class="error-message" aria-live="polite"></p>
+          <button id="setcategory" type="button">카테고리 선택하기</button>
+          <button id="edit-title" type="button" hidden>제목 수정</button>
+          <div class="edit-title-action" hidden>
+            <button id="edit-title-confirm" type="button">수정</button>
+            <button id="edit-title-cancel" type="button">취소</button>
+          </div>
+          <section class="want-list-detail" hidden>
+            <h4>해당되는 카테고리를 선택해주세요.</h4>
+            <label for="content-type">영화인지 시리즈인지 알려주세요.</label>
+            <form id="content-type">
+              <label><input type="radio" name="howlong" value="영화" checked>영화</label>
+              <label><input type="radio" name="howlong" value="시리즈">시리즈</label>
+            </form>
+            <label><input type="checkbox" id="putcategory">추가 카테고리 선택하기</label>
+            <fieldset id="category-list" hidden>
+              <legend>카테고리</legend>
+              <label><input type="checkbox" name="content-category" value="일상">일상</label>
+              <label><input type="checkbox" name="content-category" value="코미디">코미디</label>
+              <label><input type="checkbox" name="content-category" value="액션">액션</label>
+              <label><input type="checkbox" name="content-category" value="로맨스">로맨스</label>
+              <label><input type="checkbox" name="content-category" value="판타지">판타지</label>
+              <label><input type="checkbox" name="content-category" value="SF">SF</label>
+              <label><input type="checkbox" name="content-category" value="공포">공포</label>
+              <label><input type="checkbox" name="content-category" value="미스터리">미스터리</label>
+              <label><input type="checkbox" name="content-category" value="스릴러">스릴러</label>
+            </fieldset>
+            <button id="addcontent" type="button">찜 목록에 콘텐츠 추가하기</button>
+          </section>
+
+        </section>
+        <section class="content-summary" hidden>
+          <div class="list-content">
+            <div><p id="lctitle"></p></div>
+            <div><p>|</p></div>
+            <div><p id="lctype"></p></div>
+            <div><p>|</p></div>
+            <div><p id="lccategory"></p></div>
+          </div>
+          
+          <button id="rewrite-list" type="button">콘텐츠 정보 수정하기</button>
+
+        </section>
+        
+        <button id="choose-content" type="button" hidden>감상할 콘텐츠 선택하기</button>
+      </div>
+    </section>
+    <section id="select-flow" class="select-flow" hidden>
+      <h2>콘텐츠 선택하기</h2>
       <p class="progress" aria-label="progress-step">
-        <span class="progress-item">1 · 제목</span>
-        <span class="progress-item">2 · 분류</span>
+        <span class="progress-item">1 · 찜 목록</span>
+        <span class="progress-item">2 · 카테고리</span>
         <span class="progress-item">3 · 확인</span>
       </p>
 
       <section class="step" data-step="1" hidden>
-        <h3>콘텐츠 정보를 입력해주세요.</h3>
-        <label for="content-title">콘텐츠 제목</label>
-        <input id="content-title" type="text" placeholder="예: 죠죠의 기묘한 모험" aria-describedby="title-error">
-        <p id="title-error" class="error-message" aria-live="polite"></p>
+        <h3>어떤 찜 목록을 선택하시겠어요?</h3>
+        <label for="choose-list">찜 목록</label>
+        <form id="choose-list"></form>
         <button id="title-next" type="button">카테고리 선택하기</button>
       </section>
-
       <section class="step" data-step="2" hidden>
         <h3>카테고리를 선택해주세요.</h3>
-        <label for="typecheck">영화인지 시리즈인지 알려주세요!</label>
+        <label for="typecheck">오늘 보고싶은 콘텐츠는?</label>
         <form id="typecheck">
           <label><input type="radio" name="group" value="영화" checked>영화</label>
           <label><input type="radio" name="group" value="시리즈">시리즈</label>
         </form>
-        <label><input type="checkbox" id="addcategory">추가 카테고리 선택하기</label>
+        <label><input type="checkbox" id="select-category">더 정확한 결과를 원한다면? 보고싶은 카테고리 선택하기!</label>
         <fieldset id="category-options" hidden>
-          <legend>카테고리 분류</legend>
+          <legend>카테고리</legend>
           <label><input type="radio" name="category" value="일상" checked>일상</label>
           <label><input type="radio" name="category" value="코미디">코미디</label>
           <label><input type="radio" name="category" value="액션">액션</label>
@@ -182,22 +255,22 @@
       </section>
 
       <section class="step" data-step="3" hidden>
-        <h3>입력한 내용을 확인해주세요.</h3>
+        <h3>선택한 내용을 확인해주세요.</h3>
         <div class="summary-list">
-          <div><span>콘텐츠 제목</span><strong id="summary-title"></strong></div>
+          <div><span>선택한 찜 목록</span><strong id="summary-title"></strong></div>
           <div><span>분류</span><strong id="summary-type"></strong></div>
           <div><span>카테고리</span><strong id="summary-category"></strong></div>
         </div>
         <div class="step-actions">
           <button id="prev-summary" type="button">수정하기</button>
-          <button id="finish-button" type="button">작성 완료하기</button>
+          <button id="finish-button" type="button">선택 완료하기</button>
         </div>
       </section>
 
       <section class="step complete-step" data-step="4" hidden>
-        <h3>콘텐츠 정보 작성이 완료되었습니다.</h3>
-        <p>작성한 내용을 확인했어요. 필요하면 다시 작성할 수 있습니다.</p>
-        <button id="restart-button" type="button">다시 작성하기</button>
+        <h3>선택이 완료되었습니다.</h3>
+        <p>선택한 내용을 확인했어요. 이어서 감상할 콘텐츠를 확인하시거나 다시 선택할 수 있습니다.</p>
+        <button id="restart-button" type="button">다시 선택하기</button>
       </section>
     </section>
     <section id="subscribe" class="subscribe-card">
