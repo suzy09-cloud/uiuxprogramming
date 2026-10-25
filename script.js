@@ -234,7 +234,6 @@ editListName.addEventListener("click", () => {
     listNewName.type = "text";
     listNewName.placeholder = "예: 넷플릭스";
     listNewName.setAttribute("aria-describedby", "name-error");
-    listNewName.textContent = setListName;
     nameBlock.replaceWith(listNewName);
     listNewName.focus();
     editList.hidden = true;
@@ -304,7 +303,6 @@ editTitle.addEventListener("click", () => {
     Newtitle.type = "text";
     Newtitle.placeholder = "예: 죠죠의 기묘한 모험";
     Newtitle.setAttribute("aria-describedby", "title-error");
-    Newtitle.textContent = contentData.title;
     titleBlock.replaceWith(Newtitle);
     Newtitle.focus();
     editTitleAction.hidden = false;
