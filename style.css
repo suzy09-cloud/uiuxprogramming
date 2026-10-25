@@ -290,7 +290,7 @@ body.dark #info-dialog{
 .select-flow #content-title.has-error{
     border-color: #7e1010;
 }
-
+.select-flow #choose-list,
 .select-flow #typecheck{
     margin: 12px;
 }
