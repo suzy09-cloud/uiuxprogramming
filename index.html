@@ -100,14 +100,6 @@
       </div>
     </section>
 
-    <section id="steps">
-      <h2>이용 방법</h2>
-      <ol>
-        <li>OTT에 있는 찜한 목록에 있는 콘텐츠를 추가해주세요!</li>
-        <li>화면에 나타나는 선택지를 골라주세요!</li>
-        <li>콘텐츠 선정 완료!</li>
-      </ol>
-    </section>
     <section id="event-practice">
       <h2>사용 준비 단계</h2>
 
@@ -115,12 +107,6 @@
         <article class="event-card">
           <h3>화면 테마 설정</h3>
           <button id="themeButton" type="button">다크 모드로 바꾸기</button>
-        </article>
-        <article class="event-card">
-          <h3>닉네임 설정</h3>
-          <label for="nickname">사용자 이름</label>
-          <input type="text" id="nickname" maxlength="10">
-          <p id="nicknameCount" aria-live="polite">0/10</p>
         </article>
         <article class="event-card">
           <h3>정보 이용 동의</h3>
@@ -133,24 +119,34 @@
         </article>
       </div>
     <dialog id="info-dialog" aria-labelledby="info-title" aria-describedby="info-description">
-      <h2 id="info-title">정보 활용 안내</h2>
-      <p id="info-description">사이트에서 입력하신 정보를 저장 및 활용할 수 있습니다. 현재는 기능이 구현되지 않아 적용되지 않습니다.</p>
-      <div class="dialog-actions">
-        <button id="info-cancel" type="button">돌아가기</button>
-        <button id="info-confirm" type="button">동의하고 작성 시작하기</button>
-      </div>
+      <form id="agree-form" novalidate aria-busy="false">
+        <h2 id="info-title">정보 활용 안내</h2>
+        <p id="info-description">사이트에서 입력하신 정보를 저장 및 활용할 수 있습니다. 입력하신 정보는 브라우저에만 저장됩니다.</p>
+        <p id="submit-status" class="submit-status" role="status" aria-live="polite"></p>
+        <div class="dialog-actions">
+          <button id="info-cancel" type="button">돌아가기</button>
+          <button id="info-confirm" type="submit">동의하고 작성 시작하기</button>
+        </div>
+      </form>
     </dialog>
     <section id="want-list" class="want-list" hidden>
       <h2>찜 목록 관리</h2>
       <div class="list-setting">
         <section class="want-list-name">
-          <div class="name-info">
-            <h3>찜 목록의 이름을 설정해주세요.</h3>
+          <div class="field" id="name-field">
+            <div class="name-info">
+              <h3>찜 목록의 이름을 설정해주세요.</h3>
+            </div>
             <label for="list-name">찜 목록 이름</label>
+            <input id="list-name" name="list-name" type="text" minlength="2" maxlength="30" required placeholder="예: 넷플릭스" aria-describedby="name-help name-count name-error">
+            <div id="name-block" hidden></div>
+            <div class="field-meta">
+              <p id="name-help" class="field-help">2자 이상 30자 이하로 입력해주세요.</p>
+              <p id="name-count" class="field-count" aria-live="polite">0 / 30자</p>
+            </div>
+            <p id="name-error" class="field-error" role="alert"></p>
+            <button id="make-list" type="button">목록 만들기</button>
           </div>
-          <input id="list-name" type="text" placeholder="예: 넷플릭스" aria-describedby="name-error">
-          <p id="name-error" class="error-message" aria-live="polite"></p>
-          <button id="make-list" type="button">목록 만들기</button>
           <div class="edit-list" hidden>
             <button id="edit-listname" type="button">이름 수정하기</button>
             <button id="show-list" type="button">목록 작성</button>
@@ -160,13 +156,17 @@
             <button id="edit-name-cancel" type="button">취소</button>
           </div>
         </section>
-        
+        <section id="content-list">
+
+        </section>
+
         <section class="want-list-add" hidden>
           <div class="title-info">
             <h4>콘텐츠 제목을 입력해주세요.</h4>
-            <label for="content-title">콘텐츠 제목</label>
           </div>
+          <label for="content-title">콘텐츠 제목</label>
           <input id="content-title" type="text" placeholder="예: 죠죠의 기묘한 모험" aria-describedby="title-error">
+          <p id="title-block" hidden></p>
           <p id="title-error" class="error-message" aria-live="polite"></p>
           <button id="setcategory" type="button">카테고리 선택하기</button>
           <button id="edit-title" type="button" hidden>제목 수정</button>
@@ -181,7 +181,7 @@
               <label><input type="radio" name="howlong" value="영화" checked>영화</label>
               <label><input type="radio" name="howlong" value="시리즈">시리즈</label>
             </form>
-            <label><input type="checkbox" id="putcategory">추가 카테고리 선택하기</label>
+            <label><input type="checkbox" name="put" id="putcategory" value="included" aria-controls="category-list" aria-expanded="false">추가 카테고리 선택하기</label>
             <fieldset id="category-list" hidden>
               <legend>카테고리</legend>
               <label><input type="checkbox" name="content-category" value="일상">일상</label>
@@ -201,6 +201,7 @@
 
         </section>
         <section class="content-summary" hidden>
+          <p  id="complete-message">콘텐츠가 추가되었습니다.</p>
           <div class="list-content">
             <div><p id="lctitle"></p></div>
             <div><p>|</p></div>
@@ -237,19 +238,27 @@
           <label><input type="radio" name="group" value="영화" checked>영화</label>
           <label><input type="radio" name="group" value="시리즈">시리즈</label>
         </form>
-        <label><input type="checkbox" id="select-category">더 정확한 결과를 원한다면? 보고싶은 카테고리 선택하기!</label>
-        <fieldset id="category-options" hidden>
-          <legend>카테고리</legend>
-          <label><input type="radio" name="category" value="일상" checked>일상</label>
-          <label><input type="radio" name="category" value="코미디">코미디</label>
-          <label><input type="radio" name="category" value="액션">액션</label>
-          <label><input type="radio" name="category" value="로맨스">로맨스</label>
-          <label><input type="radio" name="category" value="판타지">판타지</label>
-          <label><input type="radio" name="category" value="SF">SF</label>
-          <label><input type="radio" name="category" value="공포">공포</label>
-          <label><input type="radio" name="category" value="미스터리">미스터리</label>
-          <label><input type="radio" name="category" value="스릴러">스릴러</label>
-        </fieldset>
+        <div class="field category-field">
+          <label>
+            <input type="checkbox" name="choose" id="select-category" value="included" aria-controls="category-options" aria-expanded="false">
+            <span>
+              <small>더 정확한 결과를 원한다면? </small>
+              <strong>보고싶은 카테고리 선택하기!</strong>
+            </span>
+          </label>
+          <fieldset id="category-options" hidden>
+            <legend>카테고리</legend>
+            <label><input type="radio" name="category" value="일상" checked>일상</label>
+            <label><input type="radio" name="category" value="코미디">코미디</label>
+            <label><input type="radio" name="category" value="액션">액션</label>
+            <label><input type="radio" name="category" value="로맨스">로맨스</label>
+            <label><input type="radio" name="category" value="판타지">판타지</label>
+            <label><input type="radio" name="category" value="SF">SF</label>
+            <label><input type="radio" name="category" value="공포">공포</label>
+            <label><input type="radio" name="category" value="미스터리">미스터리</label>
+            <label><input type="radio" name="category" value="스릴러">스릴러</label>
+          </fieldset>
+        </div>
         <div class="step-actions">
           <button id="prev-option" type="button">이전</button>
           <button id="next-option" type="button">내용 확인하기</button>

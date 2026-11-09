@@ -1,3 +1,9 @@
+:root{
+    --danger: #7e1010;
+    --success: #174b29;
+    --success-bg: #ddeede;
+    --muted: #8d8c8c;
+}
 body {
     color: #2a2929;
     font-family: "Noto Sans Korean", sans-serif;
@@ -129,6 +135,11 @@ input:focus {
 button:active {
     transform: translateY(1px);
 }
+button:disabled{
+    color: #fefefe;
+    background-color: #979797;
+    cursor: not-allowed;
+}
 .event-grid{
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -250,6 +261,10 @@ body.dark .panel{
     background: #fefefe;
     color: #2a2929;
 }
+#agree-form{
+    display: flex;
+    flex-direction: column;
+}
 #info-dialog::backdrop{background: rgba(30, 20, 39, .6);}
 #info-dialog .dialog-actions{
     display: flex;
@@ -315,6 +330,19 @@ body.dark #info-dialog{
     display: flex;
     gap: 12px;
     margin-top: 20px;
+}
+.submit-status{
+    min-height: 24px;
+    margin: 14px 0 0;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 700;
+}
+.submit-status.is-success{
+    color: var(--success);
+}
+.submit-status.has-error{
+    color: var(--danger);
 }
 body.dark .select-flow{
     background-color: #535353;
@@ -413,6 +441,47 @@ body.dark .want-list .list-content,
 body.dark .want-list #title-block{
     background-color: #707070;
     border-color: #505050;
+}
+.field-meta{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    margin-top: 6px;
+}
+.field-meta .field-help{margin: 0;}
+.field-count{
+    margin: 0;
+    color: var(--muted);
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+}
+.field-error{
+    margin: 6px 0 0;
+    color: var(--danger);
+    font-size: 13px;
+    font-weight: 700;
+    min-height: 21px;
+}
+.field-error:empty{
+    display: block;
+    visibility: hidden;
+}
+#name-field.is-valid input[type="text"]{
+    border-color: var(--success);
+    background-color: var(--success-bg);
+}
+#name-field.is-valid .field-count{
+    color: var(--success);
+    font-weight: 800;
+}
+#name-field.has-error input[type="text"]{
+    border-color: var(--danger);
+}
+#name-field.has-error .field-count{
+    color: var(--danger);
+    font-weight: 800;
 }
 @media (max-width: 768px) {
     body{
