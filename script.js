@@ -1,41 +1,6 @@
-const serviceName = "ChooseYourContent";
-let isSubscribed = false;
-let submitCount = 0;
-
-function makeSubscribeMessage(email, subscribed) {
-    if (subscribed == true){
-        return email + "로 신청이 완료되었습니다.";
-    }
-    return "이메일을 입력한 뒤 신청해주세요.";
-}
-
-const subscribeForm = document.querySelector("#subscribeForm");
-const emailInput = document.querySelector("#email");
-const subscribeButton = document.querySelector("#subscribeButton");
-const subscribeMessage = document.querySelector("#subscribeMessage");
-
-function handleSubscribe(event) {
-    event.preventDefault();
-
-    const subscriberEmail = emailInput.value.trim();
-
-    if (subscriberEmail === ""){
-        subscribeMessage.textContent = "이메일을 입력한 뒤 신청해주세요.";
-        emailInput.focus();
-        return;
-    }
-    isSubscribed = true;
-    submitCount += 1;
-
-    subscribeMessage.textContent = makeSubscribeMessage(subscriberEmail,isSubscribed);
-
-    subscribeMessage.classList.add("is-success");
-
-    subscribeButton.textContent = "신청 완료";
-    subscribeButton.disabled = true;
-}
-
-subscribeForm.addEventListener("submit", handleSubscribe);
+const navLinks = document.querySelectorAll(".main-nav a");
+const menuToggle = document.querySelector("#menu-toggle");
+const mainNav = document.querySelector("#main-nav");
 
 const themeButton = document.querySelector("#themeButton");
 const agreeCheck = document.querySelector("#agree-check");
@@ -48,6 +13,42 @@ const submitStatus = document.querySelector("#submit-status");
 const forceSaveFailure = new URLSearchParams(location.search).has("save-error");
 let isSubmitting = false;
 
+function updateCurrentNav(){
+    const currentHash = window.location.hash;
+
+    navLinks.forEach((link) => {
+        const current = currentHash
+            ?link.getAttribute("href")===currentHash
+            :link === navLinks[0];
+
+        link.classList.toggle("is-current", current);
+
+        if(current) {
+            link.setAttribute("aria-current", "page");
+        }
+        else{
+            link.removeAttribute("aria-current");
+        }
+    });
+}
+
+window.addEventListener("hashchange", updateCurrentNav);
+updateCurrentNav();
+
+menuToggle.addEventListener("click", () => {
+    const isOpen = mainNav.classList.toggle("is-open");
+
+    menuToggle.textContent = isOpen ? "메뉴 닫기" : "메뉴 열기";
+    menuToggle.setAttribute("aria-expanded", String(isOpen));
+});
+
+navLinks.forEach((link) => {
+    link.addEventListener("click", () => {
+        mainNav.classList.remove("is-open");
+        menuToggle.textContent = "메뉴 열기";
+        menuToggle.setAttribute("aria-expanded", "false");
+    })
+})
 
 function handleThemeClick(){
     const isDark = document.body.classList.toggle("dark");
@@ -126,7 +127,8 @@ const formData = {
     title: "", type: "영화", selectcategory: false, category: ""
 };
 
-const wantList = document.querySelector("#want-list")
+const wantList = document.querySelector("#want-list");
+const nameForm = document.querySelector("#name-form");
 const listNameInput = document.querySelector("#list-name");
 const nameInfo = document.querySelector(".name-info");
 const nameError = document.querySelector("#name-error");
@@ -136,14 +138,17 @@ const nameCount = document.querySelector("#name-count");
 const makeList = document.querySelector("#make-list");
 const editList = document.querySelector(".edit-list");
 const showList = document.querySelector("#show-list");
+const closeList = document.querySelector("#close-list");
 const editListName = document.querySelector("#edit-listname");
 const editName = document.querySelector(".edit-name");
 const editNameConfirm = document.querySelector("#edit-name-confirm");
 const editNameCancel = document.querySelector("#edit-name-cancel");
 const nameBlock = document.querySelector("#name-block");
+const nameBlockText = document.querySelector("#name-block-text");
 const wantListAdd = document.querySelector(".want-list-add");
 const titleInfo = document.querySelector(".title-info");
-const titleBlock = document.querySelector("#title-block")
+const titleSetting = document.querySelector(".title-setting");
+const titleBlock = document.querySelector("#title-block");
 const editTitle = document.querySelector("#edit-title");
 const editTitleAction = document.querySelector(".edit-title-action");
 const editTitleConfirm = document.querySelector("#edit-title-confirm");
@@ -154,20 +159,34 @@ const putCategory = document.querySelector("#putcategory");
 const categoryList = document.querySelector("#category-list");
 const contentCategory = document.querySelectorAll('input[name = "content-category"]');
 const addContent = document.querySelector("#addcontent");
+const addConfirm = document.querySelector("#addconfirm");
+const newContent = document.querySelector("#newcontent");
 const contentSummary = document.querySelector(".content-summary");
 const listcontentTitle = document.querySelector("#lctitle");
 const listcontentType = document.querySelector("#lctype");
 const listcontentCategory = document.querySelector("#lccategory");
+const contentNextMove = document.querySelector(".content-next-move");
 const rewriteList = document.querySelector("#rewrite-list");
+const goToList = document.querySelector("#gotolist");
 const chooseContent = document.querySelector("#choose-content");
+
+const storageKey = "choose-content-contents-v1";
+const contentForm = document.querySelector("#content-form");
+const contentList = document.querySelector("#content-list");
+const emptyState = document.querySelector("#empty-state");
+const contentCount = document.querySelector("#content-count");
+const contentArchive = document.querySelector("#content-archive");
+const archiveStatus = document.querySelector("#archive-status");
+const goToAdd = document.querySelector("#gotoadd");
+
+const filterButtons = document.querySelectorAll(".filter-button");
+let currentFilter = "all";
 
 const chooseList = document.querySelector("#choose-list");
 const choosingLabel = document.createElement("label");
 const wantlistList = document.createElement("input");
 
 let setListName = "";
-
-const contentData = {title: "", type: "movie", category:[]};
 
 const infoDialog = document.querySelector("#info-dialog");
 const infoCancel = document.querySelector("#info-cancel");
@@ -190,13 +209,28 @@ function saveStatus() {
     }
 }
 
+function saveName() {
+     try{
+        localStorage.setItem("listName", setListName);
+        return true;
+    } catch{
+        return false;
+    }
+}
+
 function agreedState() {
+    const wantListNav = document.querySelector("#want-list-nav");
+    const selectFlowNav = document.querySelector("#select-flow-nav");
+    wantListNav.hidden = false;
+    selectFlowNav.hidden = false;
     agreeCheck.hidden = true;
     agreeMessage.hidden = true;
     startButton.hidden = true;
     const agreeRow = document.querySelector(".agree-row");
     agreeRow.textContent = "정보 수집 및 활용에 동의했습니다.";
     wantList.hidden = false;
+    selectFlow.hidden = false;
+    showStep(0);
 }
 
 startButton.addEventListener("click", () => {
@@ -234,6 +268,7 @@ async function persistAgreement() {
     throw new Error("브라우저 저장 실패");
   }
 }
+
 
 form.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -273,7 +308,7 @@ form.addEventListener("submit", async (event) => {
     catch{
         setSubmitState(false, "저장하지 못했습니다. 다시 시도해주세요.")
     }
-})
+});
 
 window.addEventListener("DOMContentLoaded", () => {
     const agreed = localStorage.getItem("agreed");
@@ -282,21 +317,27 @@ window.addEventListener("DOMContentLoaded", () => {
     if(agreed && agreed === confirmed){
         agreedState();
     }
-})
+
+    const savedName = localStorage.getItem("listName");
+
+    if(savedName){
+        showSavedName();
+    }
+});
 
 function updateNameExperience() {
     const length = listNameInput.value.length;
     const valid = listNameInput.value.trim().length >= 2;
     const hasError =titleInput.getAttribute("aria-invalid") === "true";
 
-    nameCount.textContent = `${length} / 30자`;
+    nameCount.textContent = `${length} / 15자`;
     nameField.classList.toggle("has-error", hasError);
     nameField.classList.toggle("is-valid", valid && !hasError);
     nameHelp.textContent = hasError
         ? "제목 입력 조건을 다시 확인해주세요."
         :valid
             ? "입력 조건을 충족했습니다."
-    : "2자 이상 30자 이하로 입력해주세요."
+    : "2자 이상 15자 이하로 입력해주세요."
 }
 
 function validateName() {
@@ -333,16 +374,27 @@ updateNameExperience();
 
 makeList.addEventListener("click", () => {
     if(!validateName()) return;
+    saveName();
     nameField.classList.remove("is-valid", "has-error");
     updateNameExperience();
     listNameInput.hidden = true;
     nameHelp.hidden = true;
     nameCount.hidden = true;
     nameBlock.hidden = false;
-    nameBlock.textContent = setListName;
+    nameBlockText.textContent = setListName;
     nameInfo.hidden = true;
     makeList.hidden = true;
     editList.hidden = false;
+    closeList.hidden = true;
+    choosingLabel.id = setListName;
+    chooseList.appendChild(choosingLabel);
+    wantlistList.type = "radio";
+    wantlistList.name= "list";
+    wantlistList.value = setListName;
+    const labelText = document.createTextNode(setListName);
+    choosingLabel.appendChild(wantlistList);
+    choosingLabel.appendChild(labelText);
+    wantlistList.checked = true;
 });
 
 editListName.addEventListener("click", () => {
@@ -350,7 +402,7 @@ editListName.addEventListener("click", () => {
     nameField.classList.remove("is-valid", "has-error");
     updateNameExperience();
     listNameInput.hidden = false;
-    listNameInput.value = nameBlock.textContent;
+    listNameInput.value = nameBlockText.textContent;
     nameHelp.hidden = false;
     nameCount.hidden = false;
     listNameInput.focus();
@@ -367,11 +419,47 @@ function makeNameBlock(){
     nameInfo.hidden = true;
     editName.hidden = true;
     editList.hidden = false;
-    nameBlock.textContent = setListName;
+    nameBlockText.textContent = setListName;
+    saveName();
 }
+
+function showSavedName() {
+    const savedName = localStorage.getItem("listName");
+
+    setListName = savedName;
+    listNameInput.hidden = true;
+    nameHelp.hidden = true;
+    nameCount.hidden = true;
+    nameBlock.hidden = false;
+    nameBlockText.textContent = setListName;
+    nameInfo.hidden = true;
+    makeList.hidden = true;
+    editList.hidden = false;
+    closeList.hidden = true;
+    choosingLabel.id = setListName;
+    chooseList.appendChild(choosingLabel);
+    wantlistList.type = "radio";
+    wantlistList.name= "list";
+    wantlistList.value = setListName;
+    const labelText = document.createTextNode(setListName);
+    choosingLabel.appendChild(wantlistList);
+    choosingLabel.appendChild(labelText);
+    wantlistList.checked = true;
+}
+
 editNameConfirm.addEventListener("click", () => {
     if(!validateName()) return;
     makeNameBlock();
+    chooseList.firstChild.textContent = "";
+    choosingLabel.id = setListName;
+    chooseList.appendChild(choosingLabel);
+    wantlistList.type = "radio";
+    wantlistList.name= "list";
+    wantlistList.value = setListName;
+    const labelText = document.createTextNode(setListName);
+    choosingLabel.appendChild(wantlistList);
+    choosingLabel.appendChild(labelText);
+    wantlistList.checked = true;
 });
 
 editNameCancel.addEventListener("click", () => {
@@ -380,9 +468,39 @@ editNameCancel.addEventListener("click", () => {
 });
 
 showList.addEventListener("click", () => {
-    editList.hidden = true;
-    wantListAdd.hidden = false;
+    showList.hidden = true;
+    closeList.hidden = false;
+    contentArchive.hidden = false;
+    contentArchive.scrollIntoView({behavior: "smooth"});
+});
+
+closeList.addEventListener("click", () => {
+    wantListAdd.hidden = true;
     contentSummary.hidden = true;
+    showList.hidden = false;
+    closeList.hidden = true;
+    contentArchive.hidden = true;
+});
+
+goToAdd.addEventListener("click", () => {
+
+    contentForm.reset();
+    titleInput.value = "";
+    titleInput.hidden = false;
+    titleBlock.textContent = "";
+    titleBlock.hidden = true;
+    editTitle.hidden =true;
+    setCategory.hidden =false;
+    putCategory.checked = false;
+    categoryList.hidden = true;
+    addContent.textContent = "찜 목록에 콘텐츠 추가하기";
+    document.querySelector("#complete-message").textContent = "콘텐츠를 다음 내용으로 추가하시겠습니까?";
+    titleSetting.hidden = false;
+    wantListDetail.hidden = true;
+    contentSummary.hidden = true;
+    
+    contentNextMove.hidden = true;
+    wantListAdd.hidden = false;
     wantListAdd.scrollIntoView({behavior: "smooth"});
     titleInput.focus();
 });
@@ -404,13 +522,155 @@ function validateTitle() {
     }
     titleError.textContent = "";
     titleInput.classList.remove("has-error");
-    contentData.title = value;
     return true;
+}
+
+function readContents() {
+  try {
+    const stored = JSON.parse(localStorage.getItem(storageKey) || "[]");
+    if (!Array.isArray(stored)) return [];
+    return stored.filter((content) => content && typeof content.id === "string" && typeof content.title === "string")
+      .map((content) => ({
+        id: content.id,
+        title: content.title,
+        type: ["영화", "시리즈", ].includes(content.type) ? content.type : "영화",
+        detailcheck: content.detailcheck === true,
+        category: Array.isArray(content.category)
+          ? content.category.filter((item) => typeof item === "string")
+          : [],
+      }));
+  } catch {
+    return [];
+  }
+}
+
+let contents = readContents();
+
+function saveContent() {
+  try {
+    localStorage.setItem(storageKey, JSON.stringify(contents));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function getFormValues() {
+    const checkedCategories = putCategory.checked
+    ? Array.from(contentForm.querySelectorAll('input[name="content-category"]:checked')).map(el => el.value)
+    : [];
+  return {
+    title: titleInput.value.trim(),
+    type: contentForm.querySelector('input[name = "howlong"]:checked')?.value || '영화',
+    detailcheck: putCategory.checked,
+    category: checkedCategories
+};
+}
+
+function createText(tag, className, content) {
+  const element = document.createElement(tag);
+  element.className = className;
+  element.textContent = content;
+  return element;
+}
+
+function getVisibleContents() {
+    return contents.filter((content)=>{
+        if(currentFilter === "all") return true;
+        if(currentFilter === "movie") return content.type === "영화";
+        if(currentFilter === "series") return content.type === "시리즈"
+        return true;
+    })
+}
+
+function renderContents() {
+  const visibleContents = getVisibleContents();
+
+  contentList.replaceChildren();
+  emptyState.hidden = visibleContents.length !== 0;
+  contentList.hidden = visibleContents.length === 0;
+
+  const emptyTitle = emptyState.querySelector("h3");
+  const emptyDescription = emptyState.querySelector("p");
+  
+  if(visibleContents.length === 0){
+      const filtered = currentFilter !== "all";
+      emptyTitle.textContent = filtered
+        ? "선택한 종류의 콘텐츠가 없어요."
+        :"아직 저장된 콘텐츠가 없어요.";
+      emptyDescription.textContent = filtered
+        ? "다른 종류를 선택해보세요."
+        : "첫 콘텐츠를 목록에 추가하면 이곳에서 다시 볼 수 있습니다.";
+  };
+
+  chooseContent.hidden = contents.length === 0;
+  document.querySelector("#select-flow-nav"). hidden = contents.length === 0;
+  selectFlow.hidden = contents.length === 0;
+
+  contentCount.textContent = String(visibleContents.length);
+  contentCount.setAttribute("aria-label", `현재 표시 중인 콘텐츠 ${visibleContents.length}개`);
+
+  visibleContents.forEach((content) => {
+    const card = document.createElement("li");
+    card.className = "content-card";
+    const top = document.createElement("div");
+    top.className = "content-card-top";
+    card.append(top);
+    card.append(createText("h3", "content-title-text", content.title));
+    const hasCategories = content.detailcheck && Array.isArray(content.category) && content.category.length > 0;
+    const categoryText = hasCategories ? content.category.join(", ") : "설정 안함";
+    card.append(createText("p", "content-info", `${content.type} · ${categoryText}`));
+
+    const actions = document.createElement("div");
+    actions.className = "content-actions";
+
+    const deleteButton = document.createElement("button");
+    deleteButton.type = "button";
+    deleteButton.className = "delete-button";
+    deleteButton.textContent = "삭제";
+    deleteButton.setAttribute("aria-label", `${content.title} 삭제`);
+
+    deleteButton.addEventListener("click", () => {
+      deleteContent(content.id);
+    });
+
+    actions.append(deleteButton);
+    card.append(actions);
+
+    contentList.append(card);
+  });
+}
+
+filterButtons.forEach((button) => {
+    button.addEventListener("click", ()=>{
+        currentFilter = button.dataset.filter;
+
+        filterButtons.forEach((item) => {
+            const selected = item === button;
+            item.classList.toggle("is-active", selected);
+            item.setAttribute("aria-pressed", String(selected));
+        });
+        renderContents();
+    });
+});
+
+function deleteContent(id) {
+  const target = contents.find((item) => item.id === id);
+  if (!target) return;
+
+  const isConfirmed = confirm(`"${target.title}" 콘텐츠를 정말 삭제하시겠습니까?`);
+  if (!isConfirmed) return;
+
+  contents = contents.filter((item) => item.id !== id);
+  saveContent();
+  renderContents();
+  archiveStatus.textContent = `"${target.title}" 콘텐츠를 삭제했습니다.`;
 }
 
 setCategory.addEventListener("click", () => {
     if(!validateTitle()) return;
-    titleBlock.textContent = contentData.title;
+    const values = getFormValues();
+    titleBlock.textContent = values.title;
     titleInput.hidden = true;
     titleBlock.hidden = false;
     titleInfo.hidden = true;
@@ -421,7 +681,8 @@ setCategory.addEventListener("click", () => {
 });
 
 editTitle.addEventListener("click", () => {
-    titleInput.value = titleBlock.textContent;
+    const values = getFormValues();
+    titleInput.value = values.title;
     titleInput.hidden = false;
     titleBlock.hidden = true;
     titleInput.focus();
@@ -430,7 +691,8 @@ editTitle.addEventListener("click", () => {
 });
 
 function makeTitleBlock(){
-    titleBlock.textContent = contentData.title;
+    const values = getFormValues();
+    titleBlock.textContent = values.title;
     titleInput.hidden = true;
     titleBlock.hidden = false;
     editTitleAction.hidden = true;
@@ -461,54 +723,89 @@ function syncPutCategoryFields() {
 putCategory.addEventListener("change", syncPutCategoryFields);
 syncPutCategoryFields();
 
-
+function updateSummary() {
+  const values = getFormValues();
+  listcontentTitle.textContent = values.title;
+  listcontentType.textContent = `${values.type}`;
+  listcontentCategory.textContent = values.category.length === 0 ? "선택 안함" : values.category.join(", ");
+}
 
 addContent.addEventListener("click", () => {
     if(!validateTitle()) return;
-    const howLong = document.querySelector('input[name = "howlong"]:checked');
-    contentData.type = howLong.value;
-    const selectedContentCategory = document.querySelectorAll('input[name = "content-category"]:checked');
-    selectedContentCategory.forEach((el) => {
-        contentData.category.push(el.value);
-    });
 
-    listcontentTitle.textContent = contentData.title;
-    listcontentType.textContent = contentData.type;
-    listcontentCategory.textContent = contentData.category.length == 0 ? "선택 안함" : contentData.category.join(", ");
+    updateSummary();
     
+    titleSetting.hidden = true;
+    wantListDetail.hidden = true;
     editList.hidden = false;
     showList.hidden = true;
     contentSummary.hidden = false;
-    wantListAdd.hidden = true;
+    document.querySelector(".list-confirm").hidden = false;
     chooseContent.hidden = false;
     contentSummary.scrollIntoView({behavior: "smooth"});
-    addContent.textContent = "콘텐츠 정보 수정하기";
 });
 
 rewriteList.addEventListener("click", () => {
-    contentData.category.length = 0;
-    wantListAdd.hidden = false;
+    addContent.textContent = "콘텐츠 정보 수정하기";
+    titleSetting.hidden = false;
+    wantListDetail.hidden = false;
     contentSummary.hidden = true;
-    chooseContent.hidden = true;
     setCategory.scrollIntoView({behavior: "smooth"});
 });
 
-chooseContent.addEventListener("click", () => {
-    wantList.hidden = true;
-    selectFlow.hidden = false;
-    showStep(0);
-    selectFlow.scrollIntoView({behavior: "smooth"});
+newContent.addEventListener("click", () => {
+    contentForm.reset();
+    titleInput.value = "";
+    titleInput.hidden = false;
+    titleBlock.textContent = "";
+    titleBlock.hidden = true;
+    editTitle.hidden =true;
+    setCategory.hidden =false;
+    putCategory.checked = false;
+    categoryList.hidden = true;
+    addContent.textContent = "찜 목록에 콘텐츠 추가하기";
+    document.querySelector("#complete-message").textContent = "콘텐츠를 다음 내용으로 추가하시겠습니까?";
+    titleSetting.hidden = false;
+    wantListDetail.hidden = true;
+    contentSummary.hidden = true;
+    
+    contentNextMove.hidden = true;
+    titleInfo.scrollIntoView({behavior: "smooth"});
     titleInput.focus();
-    chooseList.appendChild(choosingLabel);
-    wantlistList.type = "radio";
-    wantlistList.name= "list";
-    wantlistList.value = setListName;
-    const labelText = document.createTextNode(setListName);
-    choosingLabel.appendChild(wantlistList);
-    choosingLabel.appendChild(labelText);
-    wantlistList.checked = true;
-    wantlistList.focus();
+});
 
+addConfirm.addEventListener("click", (event) => {
+    event.preventDefault();
+    const content = {
+        id: typeof crypto.randomUUID === "function" ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`,
+        ...getFormValues(),
+        cancelled: false,
+        createdAt: new Date().toISOString()
+    };
+    contents.unshift(content);
+    const persisted = saveContent();
+    renderContents();
+    archiveStatus.textContent = persisted
+        ? " 아래 목록에서 콘텐츠 내용을 다시 확인할 수 있습니다."
+        : "콘텐츠 내용을 현재 화면에 저장했습니다. 브라우저 저장 공간을 사용할 수 없어 새로고침하면 사라질 수 있습니다.";
+    document.querySelector("#complete-message").textContent = "저장된 내용은 내 콘텐츠 보기에서도 확인할 수 있습니다.";
+    document.querySelector(".list-confirm").hidden = true;
+    contentNextMove.hidden = false;
+});
+
+goToList.addEventListener("click", () => {
+    contentArchive.scrollIntoView({behavior: "smooth"});
+    wantListAdd.hidden = true;
+});
+
+renderContents();
+
+
+
+chooseContent.addEventListener("click", () => {
+    selectFlow.scrollIntoView({behavior: "smooth"});
+    const listList = document.querySelector(`#choose-list > input`)
+    listList.focus();
 });
 
 titleNext.addEventListener("click", () => {
